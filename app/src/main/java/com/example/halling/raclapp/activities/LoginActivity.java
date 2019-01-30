@@ -1,53 +1,53 @@
 package com.example.halling.raclapp.activities;
 
+import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Toast;
 import com.example.halling.raclapp.R;
+import com.example.halling.raclapp.database.DataGenerator;
+import com.example.halling.raclapp.database.entity.User;
+import com.example.halling.raclapp.databinding.ActivityLoginBinding;
+import com.example.halling.raclapp.viewmodel.UserViewModel;
+
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setupBindings(savedInstanceState);
+    }
 
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+    @SuppressLint("NewApi")
+    private void setupBindings(Bundle savedInstanceState) {
+        ActivityLoginBinding activityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login);
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        activityLoginBinding.setLifecycleOwner(this);
+        activityLoginBinding.btnLogin.setOnClickListener(v -> {
+            userViewModel.getValidLogin(activityLoginBinding.inputEmail.getText().toString(), activityLoginBinding.inputPassword.getText().toString()).observe(this, user1 -> {
+                    if (user1 != null) {
+                        if (user1.getUsername().isEmpty()) {
+                            activityLoginBinding.inputEmail.setError("Wrong Username");
+                            activityLoginBinding.inputEmail.requestFocus();
+                        } else if (user1.getPassword().isEmpty()) {
+                            activityLoginBinding.inputPassword.setError("Wrong Password");
+                            activityLoginBinding.inputPassword.requestFocus();
+                        } else {
+                            Toast.makeText(v.getContext(), "User: " + user1.getUsername() + " with password" + user1.getPassword() + "successful logged in", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(v.getContext(), "No user found", Toast.LENGTH_LONG).show();
+                    }
+            });
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
