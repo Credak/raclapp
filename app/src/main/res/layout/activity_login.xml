@@ -27,7 +27,7 @@
                           android:layout_height="wrap_content"
                           android:inputType="textEmailAddress"
                           android:text="@={user.username}"
-                          android:hint="@string/username" />
+                          android:hint="@string/username"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password Label -->
@@ -40,7 +40,8 @@
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:text="@={user.password}"
-                          android:hint="@string/password"/>
+                          android:hint="@string/password"
+                          android:inputType="textPassword"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.v7.widget.AppCompatButton
