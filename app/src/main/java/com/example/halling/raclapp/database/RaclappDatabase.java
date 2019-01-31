@@ -10,12 +10,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import com.example.halling.raclapp.database.dao.ProductDAO;
 import com.example.halling.raclapp.database.dao.UserDAO;
+import com.example.halling.raclapp.database.entity.Product;
 import com.example.halling.raclapp.database.entity.User;
 
 import java.util.List;
 
-@Database(entities = {User.class}, version = 2)
+@Database(entities = {User.class, Product.class}, version = 4)
 public abstract class RaclappDatabase extends RoomDatabase {
     @VisibleForTesting
     private static final String DATABASE_NAME = "raclapp-database";
@@ -46,15 +48,19 @@ public abstract class RaclappDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final UserDAO userDAO;
+        private final ProductDAO productDAO;
 
         PopulateDbAsync(RaclappDatabase db) {
             userDAO = db.userDAO();
+            productDAO = db.productDAO();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
             userDAO.deleteAllUser();
             userDAO.insertAllUser(DataGenerator.generateUser());
+            productDAO.deleteAllUser();
+            productDAO.insertAllProducts(DataGenerator.generateProducts());
             return null;
         }
     }
@@ -73,4 +79,5 @@ public abstract class RaclappDatabase extends RoomDatabase {
     }
 
     public abstract UserDAO userDAO();
+    public abstract ProductDAO productDAO();
 }
