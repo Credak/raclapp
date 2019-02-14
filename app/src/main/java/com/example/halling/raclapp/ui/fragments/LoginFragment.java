@@ -2,6 +2,7 @@ package com.example.halling.raclapp.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.example.halling.raclapp.R;
 import com.example.halling.raclapp.databinding.FragmentLoginBinding;
+import com.example.halling.raclapp.ui.activities.ProductActivity;
 import com.example.halling.raclapp.viewmodel.UserViewModel;
 
 public class LoginFragment extends Fragment {
@@ -39,6 +41,7 @@ public class LoginFragment extends Fragment {
         fragmentLoginBinding.btnLogin.setOnClickListener(v -> this.attemptLogin(fragmentLoginBinding, userViewModel, v));
     }
 
+    @SuppressLint("ResourceType")
     private void attemptLogin(FragmentLoginBinding fragmentLoginBinding, UserViewModel userViewModel, View v){
         if (TextUtils.isEmpty(fragmentLoginBinding.inputEmail.getText().toString())) {
             fragmentLoginBinding.inputEmail.setError("Required Field");
@@ -49,7 +52,8 @@ public class LoginFragment extends Fragment {
         } else {
             userViewModel.getValidLogin(fragmentLoginBinding.inputEmail.getText().toString(), fragmentLoginBinding.inputPassword.getText().toString()).observe(this, user1 -> {
                 if (user1 != null) {
-                    Toast.makeText(v.getContext(), "User: " + user1.getUsername() + " with password" + user1.getPassword() + "successful logged in", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(this.getActivity(), ProductActivity.class);
+                    this.startActivity(intent);
                 } else {
                     Toast.makeText(v.getContext(), "No user found", Toast.LENGTH_LONG).show();
                 }

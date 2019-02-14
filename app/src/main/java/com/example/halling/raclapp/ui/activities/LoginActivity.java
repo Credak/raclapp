@@ -18,6 +18,5 @@ public class LoginActivity extends AppCompatActivity {
             loginFragment.setArguments(this.getIntent().getExtras());
             this.getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, loginFragment).commit();
         }
-
     }
 }
